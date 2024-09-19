@@ -28,11 +28,13 @@ function ProductTable({ products, filterText, inStockOnly }) {
   const rows = [];
   let lastCategory = null;
 
-  console.log(filterText)
-  products = products.filter(product => product.stocked || !inStockOnly)
-  products = products.filter(product => filterText === product.name.slice(0, filterText.length).toLowerCase())
-
   products.forEach((product) => {
+    if (inStockOnly && !product.stocked) {
+      return;
+    }
+    if (product.name.indexOf(filterText) === -1) {
+      return;
+    }
     if (product.category !== lastCategory) {
       rows.push(
         <ProductCategoryRow
@@ -45,7 +47,7 @@ function ProductTable({ products, filterText, inStockOnly }) {
         product={product}
         key={product.name} />
     );
-      lastCategory = product.category;
+    lastCategory = product.category;
   });
 
   return (
